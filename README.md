@@ -1,6 +1,6 @@
-# workd
+# Workd-App
 
-A new Flutter project.
+A new Flutter project. It displays the amount of hours worked on a day based on a starting hour and finishing hour
 
 ## Getting Started
 
