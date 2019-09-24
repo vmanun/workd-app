@@ -5,9 +5,9 @@ abstract class AppTheme {
   ///Background Color; used for unaccentuated widgets
   static const Color bgColor = Color.fromARGB(255, 255, 240, 230);
   ///Background Color; used for accentuated widgets (such as buttons)
-  static const Color secondaryBgColor = Color.fromARGB(255, 255, 222, 201);
+  static const Color secondaryBgColor = Color.fromARGB(255, 255, 202, 181);
   ///Splash bg color for Inwells and MaterialButtons
-  static const Color splashColor = Color.fromARGB(255, 255, 193, 153);
+  static const Color splashColor = Color.fromARGB(255, 255, 173, 133);
 
 
 
