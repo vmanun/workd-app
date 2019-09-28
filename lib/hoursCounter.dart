@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:workd/appTheme.dart';
+import 'package:workd/resultsView.dart';
 
 class HoursCounter extends StatefulWidget {
   HoursCounter();
@@ -26,7 +27,7 @@ class _HoursCounterState extends State<HoursCounter> {
 
   void _startCounter() => setState(() {
         _isVisible = true;
-        _counter = Stream.periodic(Duration(hours: 1), (time) => time);
+        _counter = Stream.periodic(Duration(seconds: 1,), (time) => time);
         _counterListener =
             _counter.listen((t) => setState(() => _totalHours = t));
         _fade(true);
@@ -41,6 +42,30 @@ class _HoursCounterState extends State<HoursCounter> {
         _fade(false);
       });
 
+  void _finishCounter() => setState(() {
+        _isVisible = false;
+        print('TOTAL HOURS: $_totalHours');
+        _fade(false);
+        if(_totalHours > 0) _toResultsRoute();
+        else _resetCounter();     
+  });
+
+  void _toResultsRoute() async {
+    _counterListener.pause();
+    await Navigator.push(
+      context, 
+      MaterialPageRoute(
+        builder: 
+          (BuildContext context) => ResultsView(_totalHours)));
+    setState(() {
+      _counterListener.cancel();
+      _counterListener = null;
+      _counter = null;
+      _totalHours = 0;
+    });  
+  }
+
+  ///A function that receives the visibility of the counter itself
   void _fade(bool value) async => await Future.delayed(
       const Duration(milliseconds: 200), () => setState(() => _isActive = value));
 
@@ -108,7 +133,7 @@ class _HoursCounterState extends State<HoursCounter> {
                 ]),
             //FINISH button will call the _finishCounter function
             MaterialButton(
-              onPressed: () => _resetCounter(),
+              onPressed: () => _finishCounter(),
               color: AppTheme.secondaryBgColor,
               splashColor: AppTheme.splashColor,
               child: Container(
