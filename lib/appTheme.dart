@@ -9,11 +9,16 @@ abstract class AppTheme {
   ///Splash bg color for Inwells and MaterialButtons
   static const Color splashColor = Color.fromARGB(255, 255, 173, 133);
 
+  ///Logo for the app
+  static final Widget logo = Container(
+    width: 105.0,
+    height: 50.0, 
+    child: Center(child: Image.asset('assets/images/logo.png'))
+  );
 
-
-  //Primary text theme: headings and paragraphs
+  ///Primary text theme: headings and paragraphs
   static const Color primary = Color.fromARGB(255, 148, 124, 87);
-  //Secondary text theme: buttons
+  ///Secondary text theme: buttons
   static const Color secondary = Color.fromARGB(255, 89, 70, 39);
 
   /// Heading one, style used for titles
