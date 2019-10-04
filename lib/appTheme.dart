@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+///Class containing all the color scheme for the app, as well as style of fonts.
 abstract class AppTheme {
   //COLORS used by the app:
   ///Background Color; used for unaccentuated widgets
@@ -21,11 +22,18 @@ abstract class AppTheme {
   ///Secondary text theme: buttons
   static const Color secondary = Color.fromARGB(255, 89, 70, 39);
 
+  //Text-styles:
   /// Heading one, style used for titles
   static const TextStyle headingOne = TextStyle(
     color: primary,
     fontSize: 25.0,
     fontWeight: FontWeight.w300,
+  );
+
+  static const TextStyle dialog = TextStyle(
+    color: primary,
+    fontSize: 20.0,
+    fontWeight: FontWeight.w500,
   );
 
   ///Counter Text, style used for the counter on-screen
