@@ -11,11 +11,21 @@ class Workd extends StatelessWidget {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           elevation: 0.0,
           backgroundColor: AppTheme.bgColor,
           title: Center(
             child: AppTheme.logo,
           ),
+          actions: <Widget>[
+            MaterialButton(
+              onPressed: (){},
+              child: Icon(
+                Icons.calendar_today,
+                color: AppTheme.primary,
+              )
+            )
+          ],
         ),
         body: HoursCounter(),
       )
