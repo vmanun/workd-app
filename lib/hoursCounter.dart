@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:workd/appTheme.dart';
 import 'package:workd/resultsView.dart';
+import 'package:workd/hoursData.dart';
 
 class HoursCounter extends StatefulWidget {
   HoursCounter();
@@ -14,6 +15,8 @@ class _HoursCounterState extends State<HoursCounter> {
   int _totalHours;
   bool _isActive;
   bool _isVisible;
+  bool _aSessionExistsToday;
+  bool _overwriteSession;
   Stream<int> _counter;
   StreamSubscription _counterListener;
 
@@ -23,16 +26,23 @@ class _HoursCounterState extends State<HoursCounter> {
     _totalHours = 0;
     _isActive = false;
     _isVisible = false;
+    _overwriteSession = false;
   }
 
+  ///Starts counting the hours
   void _startCounter() => setState(() {
         _isVisible = true;
-        _counter = Stream.periodic(Duration(seconds: 1,), (time) => time);
+        _counter = Stream.periodic(
+            Duration(
+              seconds: 1,
+            ),
+            (time) => time);
         _counterListener =
             _counter.listen((t) => setState(() => _totalHours = t));
         _fade(true);
       });
 
+  ///stops and resets the counter state
   void _resetCounter() => setState(() {
         _isVisible = false;
         _counterListener.cancel();
@@ -42,32 +52,47 @@ class _HoursCounterState extends State<HoursCounter> {
         _fade(false);
       });
 
+  ///stops and opens the results screen
   void _finishCounter() => setState(() {
         _isVisible = false;
         print('TOTAL HOURS: $_totalHours');
         _fade(false);
-        if(_totalHours > 0) _toResultsRoute();
-        else _resetCounter();     
-  });
+        if (_totalHours > 1)
+          _toResultsRoute(false);
+        else
+          _toResultsRoute(true);
+      });
 
-  void _toResultsRoute() async {
-    _counterListener.pause();
-    await Navigator.push(
-      context, 
-      MaterialPageRoute(
-        builder: 
-          (BuildContext context) => ResultsView(_totalHours)));
+  ///Opens the ResultsRoute widget via Navigator
+  void _toResultsRoute(bool showError) async {
+    if (!showError) {
+      _counterListener.pause();
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => ResultsView(
+                --_totalHours,
+                overwriteSession: _overwriteSession != null ? _overwriteSession : false,
+              )));
+    } else {
+      _counterListener.pause();
+      await Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (BuildContext context) => ResultsView(-1)));
+    }
     setState(() {
       _counterListener.cancel();
       _counterListener = null;
       _counter = null;
       _totalHours = 0;
-    });  
+    });
   }
 
   ///A function that receives the visibility of the counter itself
   void _fade(bool value) async => await Future.delayed(
-      const Duration(milliseconds: 200), () => setState(() => _isActive = value));
+      const Duration(milliseconds: 200),
+      () => setState(() => _isActive = value));
 
   ///The counter is ready to be displayed after pressing the BEGIN button
   Widget _counterReady() => AnimatedOpacity(
@@ -85,7 +110,11 @@ class _HoursCounterState extends State<HoursCounter> {
           Padding(
               padding: EdgeInsets.all(20.0),
               child: MaterialButton(
-                onPressed: () => _startCounter(),
+                onPressed: () async {
+                  final sessionExists = await checkForSessionsToday();
+                  if (!sessionExists) _startCounter();
+                  setState(() => _aSessionExistsToday = sessionExists);
+                },
                 color: AppTheme.secondaryBgColor,
                 splashColor: AppTheme.splashColor,
                 child: Container(
@@ -169,8 +198,44 @@ class _HoursCounterState extends State<HoursCounter> {
             ),
           ]));
 
+  Widget _showDialog() {
+    print('THERE IS A SESSION');
+    return AlertDialog(
+      content: Text(
+        'There\'s already a session done today. Do you want to overwrite it?',
+        style: AppTheme.dialog,
+        textAlign: TextAlign.center,
+      ),
+      backgroundColor: AppTheme.bgColor,
+      actions: <Widget>[
+        FlatButton(
+            onPressed: () => setState(() {
+                _aSessionExistsToday = false;
+                _overwriteSession = true;
+                _startCounter();
+              }),
+            splashColor: AppTheme.splashColor,
+            child: Text(
+              'YES',
+              textAlign: TextAlign.center,
+              style: AppTheme.button,
+            )),
+        FlatButton(
+            onPressed: () => setState(() => _aSessionExistsToday = false),
+            splashColor: AppTheme.splashColor,
+            child: Text(
+              'NO',
+              textAlign: TextAlign.center,
+              style: AppTheme.button,
+            ))
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return _isActive ? _counterActive() : _counterReady();
+    return _aSessionExistsToday != null && _aSessionExistsToday
+        ? _showDialog()
+        : _isActive ? _counterActive() : _counterReady();
   }
 }
