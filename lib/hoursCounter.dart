@@ -4,6 +4,9 @@ import 'package:workd/appTheme.dart';
 import 'package:workd/resultsView.dart';
 import 'package:workd/hoursData.dart';
 
+// TODO: The HoursCounter state needs some refactoring. Divide the counter from the first page
+/// The main view of the app. Displays and activates
+/// the counter when ready.
 class HoursCounter extends StatefulWidget {
   HoursCounter();
 
@@ -16,7 +19,6 @@ class _HoursCounterState extends State<HoursCounter> {
   bool _isActive;
   bool _isVisible;
   bool _aSessionExistsToday;
-  bool _overwriteSession;
   Stream<int> _counter;
   StreamSubscription _counterListener;
 
@@ -26,7 +28,6 @@ class _HoursCounterState extends State<HoursCounter> {
     _totalHours = 0;
     _isActive = false;
     _isVisible = false;
-    _overwriteSession = false;
   }
 
   ///Starts counting the hours
@@ -34,7 +35,7 @@ class _HoursCounterState extends State<HoursCounter> {
         _isVisible = true;
         _counter = Stream.periodic(
             Duration(
-              seconds: 1,
+              hours: 1,
             ),
             (time) => time);
         _counterListener =
@@ -55,7 +56,6 @@ class _HoursCounterState extends State<HoursCounter> {
   ///stops and opens the results screen
   void _finishCounter() => setState(() {
         _isVisible = false;
-        print('TOTAL HOURS: $_totalHours');
         _fade(false);
         if (_totalHours > 1)
           _toResultsRoute(false);
@@ -72,7 +72,6 @@ class _HoursCounterState extends State<HoursCounter> {
           MaterialPageRoute(
               builder: (BuildContext context) => ResultsView(
                 --_totalHours,
-                overwriteSession: _overwriteSession != null ? _overwriteSession : false,
               )));
     } else {
       _counterListener.pause();
@@ -211,7 +210,6 @@ class _HoursCounterState extends State<HoursCounter> {
         FlatButton(
             onPressed: () => setState(() {
                 _aSessionExistsToday = false;
-                _overwriteSession = true;
                 _startCounter();
               }),
             splashColor: AppTheme.splashColor,
@@ -234,8 +232,8 @@ class _HoursCounterState extends State<HoursCounter> {
 
   @override
   Widget build(BuildContext context) {
-    return _aSessionExistsToday != null && _aSessionExistsToday
-        ? _showDialog()
-        : _isActive ? _counterActive() : _counterReady();
+    return _aSessionExistsToday != null && _aSessionExistsToday ? 
+           _showDialog() : 
+           _isActive ? _counterActive() : _counterReady();
   }
 }
