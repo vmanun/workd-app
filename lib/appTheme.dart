@@ -36,6 +36,12 @@ abstract class AppTheme {
     fontWeight: FontWeight.w500,
   );
 
+  static const TextStyle dialogLight = TextStyle(
+    color: primary,
+    fontSize: 20.0,
+    fontWeight: FontWeight.w300,
+  );
+
   ///Counter Text, style used for the counter on-screen
   static const TextStyle counterText = TextStyle(
     color: primary,
