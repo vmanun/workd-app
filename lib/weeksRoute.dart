@@ -29,16 +29,20 @@ class WeeksRouteState extends State {
   /// Pushes a route via the navigator to a ResultsView instance with
   /// showWeekHours setted to true
   void _toResultsRoute(final week) {
-    int totalHours = 0;
+    List<int> totalHours = [0,0];
 
-    for(var session in week) totalHours += int.parse(session['totalHours'], radix: 10);
-    print('TOTAL HOURS (FROM WEEKS): $totalHours');
+    for(var session in week){
+      totalHours[0] += int.parse(session['totalHours'][0], radix: 10);
+      totalHours[1] += int.parse(session['totalHours'][1], radix: 10);
+    }
 
+    totalHours[0] += (totalHours[1] / 60).floor();
+    
     Navigator.push(
         context,
         MaterialPageRoute(
             builder: (BuildContext context) => ResultsView(
-              totalHours,
+              [...totalHours],
               showWeekHours: true,
               sessions: week,
             )));
