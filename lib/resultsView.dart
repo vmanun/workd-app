@@ -4,7 +4,7 @@ import 'package:workd/hoursData.dart';
 
 /// Display both results for the session of the day nd the weeks' sessions
 class ResultsView extends StatelessWidget {
-  final int totalHours;
+  final List<int> totalHours;
   final bool showWeekHours;
   final List<dynamic> sessions;
 
@@ -12,8 +12,8 @@ class ResultsView extends StatelessWidget {
     // -1 represents the totalHours being 0 or 1 hours. It has to be more thn one
     // showWeekHours is the handler that turns this widget from today's sesion
     // to the whole week's sessions
-    if(totalHours != -1 && !showWeekHours) {
-      writeToJson(totalHours);
+    if(totalHours[0] != -1 && !showWeekHours) {
+      writeToJson([...totalHours]);
     }
     readFromJson();
   }
@@ -27,7 +27,7 @@ class ResultsView extends StatelessWidget {
         var sessionDate = DateTime.parse(session['date']);
         sessionList.add(
         Text(
-            '${sessionDate.day}/${sessionDate.month}/${sessionDate.year}: ${session['totalHours']} hours',
+            '${sessionDate.day}/${sessionDate.month}/${sessionDate.year}: ${session['totalHours'][0]} hours and ${session['totalHours'][1]} minutes',
             style: AppTheme.dialogLight,
           )
         );
@@ -66,15 +66,25 @@ class ResultsView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Text(
-              '$totalHours',
+              '${totalHours[0]}',
               style: AppTheme.counterText,
               textAlign: TextAlign.center,
             ),
             Text(
-              'hours',
+              'hours ${!showWeekHours ? 'and' : ''}',
               style: AppTheme.headingOne,
               textAlign: TextAlign.center,
-            )
+            ),
+            Text(
+              '${!showWeekHours ? totalHours[1] : ''}',
+              style: AppTheme.counterText,
+              textAlign: TextAlign.center,
+            ),
+            Text(
+              '${!showWeekHours ? 'minutes' : ''}',
+              style: AppTheme.headingOne,
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
         _showSessions()
@@ -106,7 +116,7 @@ class ResultsView extends StatelessWidget {
             textAlign: TextAlign.start,
             style: AppTheme.headingOne,
           )),
-      body: totalHours == -1 ? _showError() : _showResults(),
+      body: totalHours[0] == -1 ? _showError() : _showResults(),
     );
   }
 }
