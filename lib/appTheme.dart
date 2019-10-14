@@ -30,12 +30,14 @@ abstract class AppTheme {
     fontWeight: FontWeight.w300,
   );
 
+  /// Text style used for dialog boxes
   static const TextStyle dialog = TextStyle(
     color: primary,
     fontSize: 20.0,
     fontWeight: FontWeight.w500,
   );
 
+  /// Dialog boxes text style, but lighter
   static const TextStyle dialogLight = TextStyle(
     color: primary,
     fontSize: 20.0,
