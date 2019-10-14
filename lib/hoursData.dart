@@ -3,10 +3,10 @@ import 'dart:convert';
 import 'package:path_provider/path_provider.dart';
 
 /// Function that will write a new session into data.json 
-void writeToJson(int totalHours) async {
+void writeToJson(List<int> totalHours) async {
   final file = await overwriteTodaySession();
   var newData =
-      '{"date": "${DateTime.now().toString()}", "totalHours": "$totalHours"}';
+      '{"date": "${DateTime.now().toString()}", "totalHours": ["${totalHours[0]}", "${totalHours[1]}"]}';
   
   List<dynamic> currentData;
   currentData = file.existsSync() ? json.decode(file.readAsStringSync()) : [];
@@ -46,7 +46,7 @@ Future<bool> checkForSessionsToday() async {
 /// only if there's already a session registered on the given day
 Future<File> overwriteTodaySession() async {
   final file = await readFromJson();
-  List<dynamic> currentData = json.decode(file.readAsStringSync());
+  List<dynamic> currentData = file.existsSync() ? json.decode(file.readAsStringSync()) : null;
 
   if(await checkForSessionsToday()) {
     currentData.removeLast();
