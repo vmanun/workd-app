@@ -17,9 +17,9 @@ samples, guidance on mobile development, and a full API reference.
 
 ## Screenshots
 
-![Home-screen](images/1.png)
-![Counter](images/2.png)
-![Results](images/3.png)
-![Manual Input](images/4.png)
-![Week List](images/5.png)
-![Week Results](images/6.png)
+![Home-screen](images/1.jpg)
+![Counter](images/2.jpg)
+![Results](images/3.jpg)
+![Manual Input](images/4.jpg)
+![Week List](images/5.jpg)
+![Week Results](images/6.jpg)
