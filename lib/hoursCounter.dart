@@ -105,10 +105,13 @@ class _HoursCounterState extends State<HoursCounter> with AutomaticKeepAliveClie
     });
   }
 
-  void _toManualInputRoute(BuildContext context) => Navigator.push(
-    context,
-    MaterialPageRoute(
-        builder: (BuildContext context) => ManualHoursInput()));
+  void _toManualInputRoute(BuildContext context) {
+    setState(() => _toManualInput = false);
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (BuildContext context) => ManualHoursInput()));
+  }
   
 
   ///A function that receives the visibility of the counter itself
