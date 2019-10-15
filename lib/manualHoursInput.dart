@@ -37,7 +37,17 @@ class _ManualHoursInputState extends State<ManualHoursInput>  {
   /// both the starting and finishing time (depending on whether the 
   /// showStartTimePicker is true or not)
   Widget _timeSelector(bool showStartTimePicker) {
-    final String emptyTime = '   --   :   --   :   --   ';
+    String resultTime(int arg) {
+      if(showStartTimePicker) {
+        return arg == 0 ? ('${_startingTime.hour > 12 ? _startingTime.hour - 12 : _startingTime.hour}')
+            :  arg == 1 ? ('${_startingTime.minute < 10 ? '0${_startingTime.minute}' : _startingTime.minute}')
+            :  arg == 2 ? ('${_startingTime.period == DayPeriod.am ? 'AM' : 'PM'}') : '   --   :   --   :   --   ';
+      }
+      return arg == 0 ? ('${_finishingTime.hour > 12 ? _finishingTime.hour - 12 : _finishingTime.hour}')
+          :  arg == 1 ? ('${_finishingTime.minute < 10 ? '0${_finishingTime.minute}' : _finishingTime.minute}')
+          :  arg == 2 ? ('${_finishingTime.period == DayPeriod.am ? 'AM' : 'PM'}') : '   --   :   --   :   --   ';
+    } 
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
@@ -58,7 +68,7 @@ class _ManualHoursInputState extends State<ManualHoursInput>  {
             if(showStartTimePicker) {
               if(_startingTime == null && selectedTime != null) _startingTime = selectedTime;
               setState(() {
-                _startingTime = _startingTime;
+                _startingTime = selectedTime;
                   if(_finishingTime != null && _startingTime != null) 
                     if(_startingTime.hour > _finishingTime.hour)
                       if(_startingTime.minute > _finishingTime.minute)
@@ -67,7 +77,7 @@ class _ManualHoursInputState extends State<ManualHoursInput>  {
             } else {
               if(_finishingTime == null && selectedTime != null) _finishingTime = selectedTime;
               setState(() {
-                _finishingTime = _finishingTime;
+                _finishingTime = selectedTime;
                   if(_finishingTime != null && _startingTime != null) 
                     if(_finishingTime.hour < _startingTime.hour)
                       if(_finishingTime.minute < _startingTime.minute)
@@ -78,10 +88,10 @@ class _ManualHoursInputState extends State<ManualHoursInput>  {
           color: AppTheme.secondaryBgColor,
           child: showStartTimePicker ? 
             Text(
-              '${_startingTime != null ? "   ${_startingTime.hour > 12 ? _startingTime.hour - 12 : _startingTime.hour}   :   ${_startingTime.minute < 10 ? '0${_startingTime.minute}' : _startingTime.minute}  ${_startingTime.period == DayPeriod.am ? 'AM' : 'PM'}" : emptyTime}',
+              '${_startingTime != null ? "   ${resultTime(0)}   :   ${resultTime(1)}  ${resultTime(2)}" : resultTime(-1)}',
             ) :
             Text(
-              '${_finishingTime != null ? "   ${_finishingTime.hour > 12 ? _finishingTime.hour - 12 : _finishingTime.hour}   :   ${_finishingTime.minute < 10 ? '0${_finishingTime.minute}' : _finishingTime.minute}  ${_finishingTime.period == DayPeriod.am ? 'AM' : 'PM'}" : emptyTime}',
+              '${_finishingTime != null ? "   ${resultTime(0)}   :   ${resultTime(1)}  ${resultTime(2)}" : resultTime(-1)}',
             ),
         )
       ],
