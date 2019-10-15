@@ -81,7 +81,7 @@ class ResultsView extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             Text(
-              '${!showWeekHours ? 'minutes' : ''}',
+              '${!showWeekHours ? 'mins' : ''}',
               style: AppTheme.headingOne,
               textAlign: TextAlign.center,
             ),
